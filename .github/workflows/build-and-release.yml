@@ -1,0 +1,196 @@
+name: Build & Auto-Release OpenRGB Plugin
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-and-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    name: Build Plugin, Windows Installer & Publish Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository with submodules and full history
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Compute version, release tag, and commit changelog
+        id: meta
+        shell: pwsh
+        run: |
+          $commitCount = (git rev-list --count HEAD).Trim()
+          $shortSha    = (git rev-parse --short=7 HEAD).Trim()
+          $appVersion  = "1.0.$commitCount"
+          $tagName     = "v$appVersion"
+
+          # Append short SHA if a tag with this commit count already exists
+          $existingTag = (git tag -l $tagName)
+          if ($existingTag) {
+            $tagName = "v$appVersion-$shortSha"
+          }
+
+          $prevTag = ""
+          $prevTags = @(git tag -l "v*" --sort=-creatordate)
+          foreach ($t in $prevTags) {
+            $tagSha = (git rev-list -n 1 $t 2>$null).Trim()
+            $headSha = (git rev-parse HEAD).Trim()
+            if ($tagSha -and ($tagSha -ne $headSha)) {
+              $prevTag = $t.Trim()
+              break
+            }
+          }
+
+          if ($prevTag) {
+            $commits = @(git log "$prevTag..HEAD" --no-merges --pretty=format:"- %s (`%h` by %an)")
+            $changelogHeader = "### Changelog (since ``$prevTag``)"
+          } else {
+            $commits = @(git log -n 30 --no-merges --pretty=format:"- %s (`%h` by %an)")
+            $changelogHeader = "### Changelog"
+          }
+
+          if (-not $commits -or $commits.Count -eq 0) {
+            $commits = @("- Automated build for commit ``$shortSha``")
+          }
+
+          $zipName   = "OpenRGBAudioRefreshPlugin-v$appVersion-Windows-x64.zip"
+          $setupName = "OpenRGBAudioRefreshPlugin-v$appVersion-Windows-x64-Setup.exe"
+
+          $notes = @(
+            "## OpenRGB Audio Refresh & Priority Plugin ``v$appVersion``"
+            ""
+            "| Target Host | OpenRGB Plugin API | Qt / Toolchain | Architecture |"
+            "| :--- | :--- | :--- | :--- |"
+            "| OpenRGB ``0.9+`` / ``1.0rc1``-``1.0rc3`` | **API Version 4** | Qt ``5.15.0`` MSVC x64 | Windows 64-bit |"
+            ""
+            "### Installation Options"
+            "1. **One-Click Windows Setup Installer (``$setupName``):** Run the installer to automatically deploy ``OpenRGBAudioRefreshPlugin.dll`` to ``%APPDATA%\OpenRGB\plugins`` (no UAC elevation required; supports hot-staging even while OpenRGB is running)."
+            "2. **OpenRGB Built-In Plugin Installer (``OpenRGBAudioRefreshPlugin.dll``):** Download ``OpenRGBAudioRefreshPlugin.dll`` and select it via **OpenRGB -> Settings -> Plugins -> Install Plugin** (or drag and drop it onto the Plugins list)."
+            "3. **Portable ZIP Bundle (``$zipName``):** Extract ``OpenRGBAudioRefreshPlugin.dll`` into ``%APPDATA%\OpenRGB\plugins\`` and restart OpenRGB."
+            ""
+            $changelogHeader
+            ($commits -join "`n")
+          ) -join "`n"
+
+          Set-Content -Path "$env:RUNNER_TEMP\RELEASE_NOTES.md" -Value $notes -Encoding utf8
+
+          "app_version=$appVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "short_sha=$shortSha"     | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "tag_name=$tagName"       | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "prev_tag=$prevTag"       | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "zip_name=$zipName"       | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "setup_name=$setupName"   | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Install Qt 5.15.0 (win64_msvc2019_64 qtbase)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.15.0'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          archives: 'qtbase'
+          cache: true
+          cache-key-prefix: 'qt5150-msvc2019-x64-qtbase'
+
+      - name: Initialize MSVC x64 Developer Environment
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsPath = (& $vswhere -products * -latest -prerelease -property installationPath).Trim()
+          if (-not $vsPath) {
+            throw "Could not locate Visual Studio installation via vswhere.exe"
+          }
+          Write-Host "Found Visual Studio at: $vsPath"
+          Import-Module "$vsPath\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+          Enter-VsDevShell -VsInstallPath $vsPath -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64"
+          Get-ChildItem Env: | ForEach-Object {
+            "$($_.Name)=$($_.Value)" | Out-File -FilePath $env:GITHUB_ENV -Append
+          }
+
+      - name: Compile OpenRGBAudioRefreshPlugin.dll & Verify QTMETADATA
+        shell: pwsh
+        env:
+          PLUGIN_VERSION: ${{ steps.meta.outputs.app_version }}
+          PLUGIN_COMMIT: ${{ steps.meta.outputs.short_sha }}
+        run: |
+          cmd.exe /c ".\build.bat"
+          if ($LASTEXITCODE -ne 0) {
+            throw "build.bat failed with exit code $LASTEXITCODE"
+          }
+          $dllPath = "build\OpenRGBAudioRefreshPlugin.dll"
+          if (-not (Test-Path $dllPath)) {
+            throw "Compiled DLL not found at $dllPath"
+          }
+          $bytes = [System.IO.File]::ReadAllBytes((Resolve-Path $dllPath))
+          $ascii = [System.Text.Encoding]::ASCII.GetString($bytes)
+          if ($ascii -notmatch "QTMETADATA" -or $ascii -notmatch "com\.OpenRGBPluginInterface") {
+            throw "QTMETADATA or com.OpenRGBPluginInterface IID missing from compiled DLL!"
+          }
+          Write-Host "Verified QTMETADATA and com.OpenRGBPluginInterface in $dllPath ($($bytes.Length) bytes)"
+
+      - name: Package Release Artifacts (DLL, Portable ZIP, Inno Setup Installer, SHA256SUMS)
+        shell: pwsh
+        run: |
+          $distDir = Join-Path $PWD "dist"
+          New-Item -ItemType Directory -Force -Path $distDir | Out-Null
+
+          # 1. Canonical unversioned DLL for OpenRGB's built-in "Install Plugin" button
+          Copy-Item -Force "build\OpenRGBAudioRefreshPlugin.dll" "$distDir\OpenRGBAudioRefreshPlugin.dll"
+
+          # 2. Portable ZIP bundle
+          $stageZip = Join-Path $env:RUNNER_TEMP "zip_stage"
+          New-Item -ItemType Directory -Force -Path $stageZip | Out-Null
+          Copy-Item -Force "build\OpenRGBAudioRefreshPlugin.dll" "$stageZip\OpenRGBAudioRefreshPlugin.dll"
+          Copy-Item -Force "README.md" "$stageZip\README.md"
+          Copy-Item -Force "LICENSE.txt" "$stageZip\LICENSE.txt"
+          $zipPath = Join-Path $distDir "${{ steps.meta.outputs.zip_name }}"
+          Compress-Archive -Path "$stageZip\*" -DestinationPath $zipPath -Force
+
+          # 3. Windows Setup .exe Installer via pre-installed Inno Setup 6 (ISCC.exe)
+          iscc.exe /Qp `
+            "/DMyAppVersion=${{ steps.meta.outputs.app_version }}" `
+            "/DSourceDir=$PWD\dist" `
+            "/O$distDir" `
+            "installer\setup.iss"
+          if ($LASTEXITCODE -ne 0) {
+            throw "Inno Setup compilation failed with exit code $LASTEXITCODE"
+          }
+
+          # 4. Generate SHA256SUMS.txt
+          $checksumLines = @()
+          Get-ChildItem -Path $distDir -File | Sort-Object Name | ForEach-Object {
+            $hash = (Get-FileHash -Path $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            $checksumLines += "$hash  $($_.Name)"
+          }
+          Set-Content -Path "$distDir\SHA256SUMS.txt" -Value ($checksumLines -join "`n") -Encoding utf8
+          Write-Host "=== Packaged Release Files ==="
+          Get-ChildItem -Path $distDir | Select-Object Name, Length | Format-Table -AutoSize
+          Get-Content "$distDir\SHA256SUMS.txt"
+
+      - name: Publish Automatic GitHub Release
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.meta.outputs.tag_name }}
+          target_commitish: ${{ github.sha }}
+          name: "OpenRGB Audio Refresh & Priority Plugin v${{ steps.meta.outputs.app_version }} (${{ steps.meta.outputs.short_sha }})"
+          body_path: ${{ runner.temp }}\RELEASE_NOTES.md
+          generate_release_notes: true
+          previous_tag: ${{ steps.meta.outputs.prev_tag }}
+          make_latest: 'true'
+          fail_on_unmatched_files: true
+          files: |
+            dist/OpenRGBAudioRefreshPlugin.dll
+            dist/${{ steps.meta.outputs.setup_name }}
+            dist/${{ steps.meta.outputs.zip_name }}
+            dist/SHA256SUMS.txt

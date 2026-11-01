@@ -2,8 +2,9 @@
 <a id="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
+[![Build & Auto-Release][build-shield]][build-url]
+[![Latest Release][release-shield]][release-url]
 [![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![GPL-2.0 License][license-shield]][license-url]
@@ -21,6 +22,8 @@
 
   <p align="center">
     Hot-refresh Windows WASAPI audio endpoints, automatically fail over when an active audio device disconnects, and maintain a toggleable priority audio device list across all OpenRGB Effects Plugin audio effects.
+    <br />
+    <strong>Platform Support: Built and confirmed working on Windows (64-bit) for now.</strong>
     <br />
     <a href="https://github.com/rjmolina13/openrgb-audio-plugin"><strong>Explore the docs »</strong></a>
     <br />
@@ -66,6 +69,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+> [!IMPORTANT]
+> **Platform Compatibility:** This plugin was built and confirmed to work on **Windows (64-bit)** for now. It relies on Windows CoreAudio / WASAPI (`IMMDeviceEnumerator` and `IMMNotificationClient`) and `OpenRGBEffectsPlugin.dll` (`Qt 5.15.0` MSVC x64, OpenRGB Plugin API Version `4`). Linux and macOS backends are not yet supported.
+
 [![OpenRGB Audio Refresh & Priority Plugin Screen Shot][product-screenshot]](https://github.com/rjmolina13/openrgb-audio-plugin)
 
 `OpenRGBEffectsPlugin` enumerates Windows WASAPI audio devices only once inside `AudioManager::AudioManager()` when OpenRGB starts. If you connect Bluetooth headphones, unplug a USB DAC, or switch monitors while OpenRGB is running, the `AudioDevice` dropdown inside effect `Audio settings` dialogs stays frozen until you restart OpenRGB.
@@ -108,6 +114,16 @@ You can install the prebuilt `OpenRGBAudioRefreshPlugin.dll` directly into your 
 
 ### Installation
 
+#### Option A: One-Click Windows Installer (`Setup.exe`)
+1. Download `OpenRGBAudioRefreshPlugin-v*-Windows-x64-Setup.exe` from the [Latest GitHub Release](https://github.com/rjmolina13/openrgb-audio-plugin/releases/latest).
+2. Run the installer. It installs `OpenRGBAudioRefreshPlugin.dll` directly into `%APPDATA%\OpenRGB\plugins` without requiring Administrator elevation (and isolates its uninstaller inside `%LOCALAPPDATA%\OpenRGBAudioRefreshPlugin` so OpenRGB never scans non-plugin files).
+3. Launch or restart `OpenRGB.exe`.
+
+#### Option B: OpenRGB Built-In Plugin Installer (`OpenRGBAudioRefreshPlugin.dll`)
+1. Download the raw `OpenRGBAudioRefreshPlugin.dll` from the [Latest GitHub Release](https://github.com/rjmolina13/openrgb-audio-plugin/releases/latest).
+2. Open **OpenRGB -> Settings -> Plugins** and click **Install Plugin** (or drag and drop `OpenRGBAudioRefreshPlugin.dll` directly onto the Plugins list).
+
+#### Option C: Build From Source
 1. Clone the repository with its submodules (`ref/OpenRGBEffectsPlugin`):
    ```sh
    git clone --recurse-submodules https://github.com/rjmolina13/openrgb-audio-plugin.git
@@ -117,7 +133,7 @@ You can install the prebuilt `OpenRGBAudioRefreshPlugin.dll` directly into your 
    ```sh
    git submodule update --init --recursive
    ```
-2. Build `OpenRGBAudioRefreshPlugin.dll` from source (or use `build\OpenRGBAudioRefreshPlugin.dll`):
+2. Build `OpenRGBAudioRefreshPlugin.dll` from source:
    ```bat
    .\build.bat
    ```
@@ -125,7 +141,7 @@ You can install the prebuilt `OpenRGBAudioRefreshPlugin.dll` directly into your 
    ```powershell
    Copy-Item -Force ".\build\OpenRGBAudioRefreshPlugin.dll" "$env:APPDATA\OpenRGB\plugins\OpenRGBAudioRefreshPlugin.dll"
    ```
-4. Launch (or restart) `OpenRGB.exe`. OpenRGB automatically enables new plugins placed in `%APPDATA%\OpenRGB\plugins`.
+4. Launch or restart `OpenRGB.exe`. OpenRGB automatically enables new plugins placed in `%APPDATA%\OpenRGB\plugins`.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -223,6 +239,10 @@ Project Link: [https://github.com/rjmolina13/openrgb-audio-plugin](https://githu
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
+[build-shield]: https://img.shields.io/github/actions/workflow/status/rjmolina13/openrgb-audio-plugin/build-and-release.yml?branch=main&style=for-the-badge&label=Build%20%26%20Release
+[build-url]: https://github.com/rjmolina13/openrgb-audio-plugin/actions/workflows/build-and-release.yml
+[release-shield]: https://img.shields.io/github/v/release/rjmolina13/openrgb-audio-plugin?style=for-the-badge
+[release-url]: https://github.com/rjmolina13/openrgb-audio-plugin/releases/latest
 [contributors-shield]: https://img.shields.io/github/contributors/rjmolina13/openrgb-audio-plugin.svg?style=for-the-badge
 [contributors-url]: https://github.com/rjmolina13/openrgb-audio-plugin/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/rjmolina13/openrgb-audio-plugin.svg?style=for-the-badge

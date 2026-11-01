@@ -153,13 +153,21 @@ OpenRGBAudioRefreshPlugin::~OpenRGBAudioRefreshPlugin()
     StopWasapiNotifications();
 }
 
+#ifndef PLUGIN_VERSION_STR
+#define PLUGIN_VERSION_STR "1.0.0"
+#endif
+
+#ifndef PLUGIN_COMMIT_STR
+#define PLUGIN_COMMIT_STR "5bf9911"
+#endif
+
 OpenRGBPluginInfo OpenRGBAudioRefreshPlugin::GetPluginInfo()
 {
     OpenRGBPluginInfo info;
     info.Name           = "OpenRGB Audio Refresh & Priority Plugin";
     info.Description    = "Adds audio device refresh button, auto-refresh and fallback on audio device absence, and toggleable priority audio devices across all effects. Author: Ronanj Molina (RubyJ / @rjmolina13)";
-    info.Version        = "1.0.0";
-    info.Commit         = "6fbcf62d";
+    info.Version        = PLUGIN_VERSION_STR;
+    info.Commit         = PLUGIN_COMMIT_STR;
     info.URL            = "https://github.com/rjmolina13/openrgb-audio-plugin";
     info.Location       = OPENRGB_PLUGIN_LOCATION_SETTINGS;
     info.Label          = "Audio Refresh & Priority";

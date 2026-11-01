@@ -29,9 +29,13 @@ jobs:
       - name: Compute version, release tag, and commit changelog
         id: meta
         shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          $repo        = "${{ github.repository }}"
           $commitCount = (git rev-list --count HEAD).Trim()
           $shortSha    = (git rev-parse --short=7 HEAD).Trim()
+          $headSha     = (git rev-parse HEAD).Trim()
           $appVersion  = "1.0.$commitCount"
           $tagName     = "v$appVersion"
 
@@ -45,7 +49,6 @@ jobs:
           $prevTags = @(git tag -l "v*" --sort=-creatordate)
           foreach ($t in $prevTags) {
             $tagSha = (git rev-list -n 1 $t 2>$null).Trim()
-            $headSha = (git rev-parse HEAD).Trim()
             if ($tagSha -and ($tagSha -ne $headSha)) {
               $prevTag = $t.Trim()
               break
@@ -53,17 +56,64 @@ jobs:
           }
 
           if ($prevTag) {
-            $commits = @(git log "$prevTag..HEAD" --no-merges '--pretty=format:- %s (`%h` by %an)')
+            $commitShas = @(git log "$prevTag..HEAD" --no-merges --pretty=format:"%H")
             $changelogHeader = "### Changelog (since ``$prevTag``)"
-            $compareFooter   = "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$prevTag...$tagName"
+            $compareFooter   = "**Full Changelog**: [``$prevTag...$tagName``](https://github.com/$repo/compare/$prevTag...$tagName)"
           } else {
-            $commits = @(git log -n 30 --no-merges '--pretty=format:- %s (`%h` by %an)')
+            $commitShas = @(git log -n 30 --no-merges --pretty=format:"%H")
             $changelogHeader = "### Changelog"
-            $compareFooter   = "**Commits**: https://github.com/${{ github.repository }}/commits/$tagName"
+            $compareFooter   = "**Commits**: [``$tagName``](https://github.com/$repo/commits/$tagName)"
+          }
+
+          $apiHeaders = @{
+            "User-Agent"    = "OpenRGB-Audio-Plugin-Release"
+            "Accept"        = "application/vnd.github+json"
+            "Authorization" = "Bearer $env:GITHUB_TOKEN"
+          }
+          $loginCache = @{}
+          $commits = @()
+
+          foreach ($cSha in $commitShas) {
+            $fullSha = "$cSha".Trim()
+            if (-not $fullSha) { continue }
+            $cShort      = $fullSha.Substring(0, 7)
+            $subject     = (git log -n 1 $fullSha --pretty=format:"%s").Trim()
+            $authorName  = (git log -n 1 $fullSha --pretty=format:"%an").Trim()
+            $authorEmail = (git log -n 1 $fullSha --pretty=format:"%ae").Trim()
+
+            $ghLogin = ""
+            if ($authorEmail -and $loginCache.ContainsKey($authorEmail)) {
+              $ghLogin = $loginCache[$authorEmail]
+            } else {
+              try {
+                $cApi = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/commits/$fullSha" -Headers $apiHeaders
+                if ($cApi.author -and $cApi.author.login) {
+                  $ghLogin = $cApi.author.login
+                } elseif ($cApi.committer -and $cApi.committer.login -and $cApi.committer.login -ne "web-flow") {
+                  $ghLogin = $cApi.committer.login
+                }
+              } catch {}
+
+              if (-not $ghLogin -and $authorEmail -match '^(?:\d+\+)?([^@]+)@users\.noreply\.github\.com$') {
+                $ghLogin = $Matches[1]
+              }
+              if ($ghLogin -and $authorEmail) {
+                $loginCache[$authorEmail] = $ghLogin
+              }
+            }
+
+            $commitLink = "[``$cShort``](https://github.com/$repo/commit/$fullSha)"
+            if ($ghLogin) {
+              $authorLink = "[@$ghLogin](https://github.com/$ghLogin)"
+            } else {
+              $authorLink = $authorName
+            }
+            $commits += "- $subject ($commitLink by $authorLink)"
           }
 
           if (-not $commits -or $commits.Count -eq 0) {
-            $commits = @("- Automated build for commit ``$shortSha``")
+            $actor = "${{ github.actor }}"
+            $commits = @("- Automated build for commit [``$shortSha``](https://github.com/$repo/commit/$headSha) by [@$actor](https://github.com/$actor)")
           }
 
           $zipName   = "OpenRGBAudioRefreshPlugin-v$appVersion-Windows-x64.zip"

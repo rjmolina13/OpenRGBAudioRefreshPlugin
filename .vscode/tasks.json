@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build OpenRGBAudioRefreshPlugin.dll",
+            "type": "shell",
+            "command": "${workspaceFolder}\\build.bat",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$msCompile"]
+        },
+        {
+            "label": "Build & Deploy to OpenRGB AppData",
+            "type": "shell",
+            "command": "& '${workspaceFolder}\\build.bat'; if ($LASTEXITCODE -eq 0) { $dst = \"$env:APPDATA\\OpenRGB\\plugins\\OpenRGBAudioRefreshPlugin.dll\"; try { Copy-Item -Force '${workspaceFolder}\\build\\OpenRGBAudioRefreshPlugin.dll' $dst -ErrorAction Stop } catch { Move-Item -Path $dst -Destination \"$env:TEMP\\OpenRGBAudioRefreshPlugin_$(Get-Date -Format 'HHmmss').dll.old\" -Force; Copy-Item -Force '${workspaceFolder}\\build\\OpenRGBAudioRefreshPlugin.dll' $dst }; Write-Host 'Deployed to %APPDATA%\\OpenRGB\\plugins\\OpenRGBAudioRefreshPlugin.dll' }",
+            "dependsOrder": "sequence",
+            "group": "build",
+            "problemMatcher": ["$msCompile"]
+        },
+        {
+            "label": "Run Integration & UI Test",
+            "type": "shell",
+            "command": "${workspaceFolder}\\run_test.bat",
+            "group": "test",
+            "problemMatcher": ["$msCompile"]
+        }
+    ]
+}

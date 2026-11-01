@@ -1,0 +1,33 @@
+{
+    "configurations": [
+        {
+            "name": "Win64-MSVC-Qt5.15",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/qt5/5.15.0/msvc2019_64/include",
+                "${workspaceFolder}/qt5/5.15.0/msvc2019_64/include/QtCore",
+                "${workspaceFolder}/qt5/5.15.0/msvc2019_64/include/QtGui",
+                "${workspaceFolder}/qt5/5.15.0/msvc2019_64/include/QtWidgets",
+                "${workspaceFolder}/ref/OpenRGB-headers"
+            ],
+            "defines": [
+                "UNICODE",
+                "_UNICODE",
+                "WIN32",
+                "WIN64",
+                "NDEBUG",
+                "QT_NO_DEBUG",
+                "QT_PLUGIN",
+                "QT_WIDGETS_LIB",
+                "QT_GUI_LIB",
+                "QT_CORE_LIB"
+            ],
+            "windowsSdkVersion": "10.0.26100.0",
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
+}

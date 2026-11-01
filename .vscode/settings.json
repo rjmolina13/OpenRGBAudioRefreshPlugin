@@ -1,0 +1,33 @@
+{
+    "files.associations": {
+        "*.h": "cpp",
+        "*.cpp": "cpp"
+    },
+    "C_Cpp.default.configurationProvider": "",
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.intelliSenseMode": "windows-msvc-x64",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/qt5/5.15.0/msvc2019_64/include",
+        "${workspaceFolder}/qt5/5.15.0/msvc2019_64/include/QtCore",
+        "${workspaceFolder}/qt5/5.15.0/msvc2019_64/include/QtGui",
+        "${workspaceFolder}/qt5/5.15.0/msvc2019_64/include/QtWidgets"
+    ],
+    "C_Cpp.default.defines": [
+        "UNICODE",
+        "_UNICODE",
+        "WIN32",
+        "WIN64",
+        "NDEBUG",
+        "QT_NO_DEBUG",
+        "QT_PLUGIN",
+        "QT_WIDGETS_LIB",
+        "QT_GUI_LIB",
+        "QT_CORE_LIB"
+    ],
+    "files.exclude": {
+        "**/build/*.obj": true,
+        "**/build/*.exp": true,
+        "**/build/*.lib": true
+    }
+}

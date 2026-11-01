@@ -1,0 +1,3 @@
+[submodule "ref/OpenRGBEffectsPlugin"]
+	path = ref/OpenRGBEffectsPlugin
+	url = https://gitlab.com/OpenRGBDevelopers/OpenRGBEffectsPlugin.git

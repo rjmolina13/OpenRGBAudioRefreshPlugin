@@ -1,0 +1,16 @@
+# Local Qt5 SDK installation (installed via aqtinstall)
+qt5/
+
+# Intermediate MSVC build and test artifacts (keep prebuilt OpenRGBAudioRefreshPlugin.dll)
+build/*.obj
+build/*.exp
+build/*.lib
+build/*.pdb
+build/*.ilk
+build/moc_*.cpp
+build/test_plugin.exe
+
+# OS / Editor temporary files
+*.old
+Thumbs.db
+.DS_Store

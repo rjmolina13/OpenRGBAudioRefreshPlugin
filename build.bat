@@ -51,6 +51,7 @@ if errorlevel 1 exit /b 1
 
 echo [2/2] Compiling and linking OpenRGBAudioRefreshPlugin.dll (v%PLUGIN_VERSION% @ %PLUGIN_COMMIT%)...
 cl.exe /nologo /O2 /MD /EHsc /Zc:__cplusplus /std:c++17 /utf-8 ^
+    /FI"%PROJ_DIR%\src\Qt5MsvcCompat.h" ^
     /D_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING ^
     /DPLUGIN_VERSION_STR=\"%PLUGIN_VERSION%\" ^
     /DPLUGIN_COMMIT_STR=\"%PLUGIN_COMMIT%\" ^

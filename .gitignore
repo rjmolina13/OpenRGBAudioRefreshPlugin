@@ -9,6 +9,7 @@ build/*.pdb
 build/*.ilk
 build/moc_*.cpp
 build/test_plugin.exe
+dist/
 
 # OS / Editor temporary files
 *.old

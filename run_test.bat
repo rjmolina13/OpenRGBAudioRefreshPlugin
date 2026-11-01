@@ -10,6 +10,7 @@ call "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliar
 if errorlevel 1 exit /b 1
 
 cl.exe /nologo /O2 /MD /EHsc /Zc:__cplusplus /std:c++17 /utf-8 ^
+    /FI"%PROJ_DIR%\src\Qt5MsvcCompat.h" ^
     /D_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING ^
     /DUNICODE /D_UNICODE /DWIN32 /DWIN64 /DNDEBUG ^
     /DQT_NO_DEBUG /DQT_WIDGETS_LIB /DQT_GUI_LIB /DQT_CORE_LIB ^

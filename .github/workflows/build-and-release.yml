@@ -24,6 +24,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Compute version, release tag, and commit changelog
         id: meta
@@ -52,11 +53,13 @@ jobs:
           }
 
           if ($prevTag) {
-            $commits = @(git log "$prevTag..HEAD" --no-merges --pretty=format:"- %s (`%h` by %an)")
+            $commits = @(git log "$prevTag..HEAD" --no-merges '--pretty=format:- %s (`%h` by %an)')
             $changelogHeader = "### Changelog (since ``$prevTag``)"
+            $compareFooter   = "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$prevTag...$tagName"
           } else {
-            $commits = @(git log -n 30 --no-merges --pretty=format:"- %s (`%h` by %an)")
+            $commits = @(git log -n 30 --no-merges '--pretty=format:- %s (`%h` by %an)')
             $changelogHeader = "### Changelog"
+            $compareFooter   = "**Commits**: https://github.com/${{ github.repository }}/commits/$tagName"
           }
 
           if (-not $commits -or $commits.Count -eq 0) {
@@ -69,17 +72,19 @@ jobs:
           $notes = @(
             "## OpenRGB Audio Refresh & Priority Plugin ``v$appVersion``"
             ""
-            "| Target Host | OpenRGB Plugin API | Qt / Toolchain | Architecture |"
+            "| Target Host | OpenRGB Plugin API | Qt / Toolchain | Platform |"
             "| :--- | :--- | :--- | :--- |"
-            "| OpenRGB ``0.9+`` / ``1.0rc1``-``1.0rc3`` | **API Version 4** | Qt ``5.15.0`` MSVC x64 | Windows 64-bit |"
+            "| OpenRGB ``0.9+`` / ``1.0rc1``-``1.0rc3`` | **API Version 4** | Qt ``5.15.0`` MSVC x64 | Windows 64-bit (confirmed working) |"
             ""
             "### Installation Options"
-            "1. **One-Click Windows Setup Installer (``$setupName``):** Run the installer to automatically deploy ``OpenRGBAudioRefreshPlugin.dll`` to ``%APPDATA%\OpenRGB\plugins`` (no UAC elevation required; supports hot-staging even while OpenRGB is running)."
+            "1. **One-Click Windows Setup Installer (``$setupName``):** Run the installer to deploy ``OpenRGBAudioRefreshPlugin.dll`` to ``%APPDATA%\OpenRGB\plugins`` (no UAC elevation required; supports hot-staging while OpenRGB is running)."
             "2. **OpenRGB Built-In Plugin Installer (``OpenRGBAudioRefreshPlugin.dll``):** Download ``OpenRGBAudioRefreshPlugin.dll`` and select it via **OpenRGB -> Settings -> Plugins -> Install Plugin** (or drag and drop it onto the Plugins list)."
             "3. **Portable ZIP Bundle (``$zipName``):** Extract ``OpenRGBAudioRefreshPlugin.dll`` into ``%APPDATA%\OpenRGB\plugins\`` and restart OpenRGB."
             ""
             $changelogHeader
             ($commits -join "`n")
+            ""
+            $compareFooter
           ) -join "`n"
 
           Set-Content -Path "$env:RUNNER_TEMP\RELEASE_NOTES.md" -Value $notes -Encoding utf8
@@ -185,8 +190,6 @@ jobs:
           target_commitish: ${{ github.sha }}
           name: "OpenRGB Audio Refresh & Priority Plugin v${{ steps.meta.outputs.app_version }} (${{ steps.meta.outputs.short_sha }})"
           body_path: ${{ runner.temp }}\RELEASE_NOTES.md
-          generate_release_notes: true
-          previous_tag: ${{ steps.meta.outputs.prev_tag }}
           make_latest: 'true'
           fail_on_unmatched_files: true
           files: |

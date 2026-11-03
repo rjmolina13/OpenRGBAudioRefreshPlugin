@@ -372,7 +372,7 @@ int main(int argc, char* argv[])
     printf("[PASS] All injected controls verified inside AudioSettings dialog\n");
 
     QString artifactDir = "C:/Users/Ronanj/.gemini/antigravity/brain/be7146bb-d3ed-402b-b90f-b9dbe9733ce5";
-    QString repoImgDir  = "D:/Users/Ronanj/Documents/Code/openrgb-audio-plugin/images";
+    QString repoImgDir  = "D:/Users/Ronanj/Documents/Code/OpenRGB-projects/OpenRGBAudioRefreshPlugin/images";
 
     auto saveDualScreenshot = [&](const QPixmap& pix, const QString& filename) {
         pix.save(artifactDir + "/" + filename);

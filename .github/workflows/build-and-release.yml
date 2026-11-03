@@ -66,7 +66,7 @@ jobs:
           }
 
           $apiHeaders = @{
-            "User-Agent"    = "OpenRGB-Audio-Plugin-Release"
+            "User-Agent"    = "OpenRGBAudioRefreshPlugin-Release"
             "Accept"        = "application/vnd.github+json"
             "Authorization" = "Bearer $env:GITHUB_TOKEN"
           }

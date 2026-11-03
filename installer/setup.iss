@@ -1,6 +1,6 @@
 ; OpenRGB Audio Refresh & Priority Plugin - Inno Setup 6 Installer Script
 ; Author: Ronanj Molina (RubyJ / @rjmolina13)
-; Repository: https://github.com/rjmolina13/openrgb-audio-plugin
+; Repository: https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin
 ;
 ; Installs OpenRGBAudioRefreshPlugin.dll into %APPDATA%\OpenRGB\plugins without requiring
 ; UAC elevation, keeping uninstaller metadata isolated in %LOCALAPPDATA%\OpenRGBAudioRefreshPlugin
@@ -20,9 +20,9 @@ AppName=OpenRGB Audio Refresh & Priority Plugin
 AppVersion={#MyAppVersion}
 AppVerName=OpenRGB Audio Refresh & Priority Plugin v{#MyAppVersion}
 AppPublisher=Ronanj Molina (RubyJ / @rjmolina13)
-AppPublisherURL=https://github.com/rjmolina13/openrgb-audio-plugin
-AppSupportURL=https://github.com/rjmolina13/openrgb-audio-plugin/issues
-AppUpdatesURL=https://github.com/rjmolina13/openrgb-audio-plugin/releases
+AppPublisherURL=https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin
+AppSupportURL=https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/issues
+AppUpdatesURL=https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/releases
 DefaultDirName={userappdata}\OpenRGB\plugins
 DisableDirPage=yes
 DisableProgramGroupPage=yes

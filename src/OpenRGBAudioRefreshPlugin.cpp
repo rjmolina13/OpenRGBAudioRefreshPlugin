@@ -1,6 +1,6 @@
 // OpenRGBAudioRefreshPlugin.cpp
 // Author: Ronanj Molina (RubyJ / @rjmolina13)
-// Repository: https://github.com/rjmolina13/openrgb-audio-plugin
+// Repository: https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "OpenRGBAudioRefreshPlugin.h"
@@ -168,7 +168,7 @@ OpenRGBPluginInfo OpenRGBAudioRefreshPlugin::GetPluginInfo()
     info.Description    = "Adds audio device refresh button, auto-refresh and fallback on audio device absence, and toggleable priority audio devices across all effects. Author: Ronanj Molina (RubyJ / @rjmolina13)";
     info.Version        = PLUGIN_VERSION_STR;
     info.Commit         = PLUGIN_COMMIT_STR;
-    info.URL            = "https://github.com/rjmolina13/openrgb-audio-plugin";
+    info.URL            = "https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin";
     info.Location       = OPENRGB_PLUGIN_LOCATION_SETTINGS;
     info.Label          = "Audio Refresh & Priority";
     info.TabIconString  = "";
@@ -1108,7 +1108,7 @@ QWidget* OpenRGBAudioRefreshPlugin::BuildStandaloneSettingsWidget()
 
     QLabel* authorLabel = new QLabel(
         "Author: <a style=\"color:#4EA8DE;\" href=\"https://github.com/rjmolina13\">Ronanj Molina (RubyJ / @rjmolina13)</a>"
-        " &nbsp;|&nbsp; Repository: <a style=\"color:#4EA8DE;\" href=\"https://github.com/rjmolina13/openrgb-audio-plugin\">github.com/rjmolina13/openrgb-audio-plugin</a>",
+        " &nbsp;|&nbsp; Repository: <a style=\"color:#4EA8DE;\" href=\"https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin\">github.com/rjmolina13/OpenRGBAudioRefreshPlugin</a>",
         root);
     authorLabel->setTextFormat(Qt::RichText);
     authorLabel->setOpenExternalLinks(true);

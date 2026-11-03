@@ -1,6 +1,6 @@
 // OpenRGBAudioRefreshPlugin.h
 // Author: Ronanj Molina (RubyJ / @rjmolina13)
-// Repository: https://github.com/rjmolina13/openrgb-audio-plugin
+// Repository: https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once

@@ -3,7 +3,7 @@
 |                                                           |
 |   OpenRGB Plugin Interface (API Version 4 - OpenRGB 1.0)  |
 |   Author: Ronanj Molina (RubyJ / @rjmolina13)             |
-|   Repo:   https://github.com/rjmolina13/openrgb-audio-plugin
+|   Repo:   https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin
 |   SPDX-License-Identifier: GPL-2.0-or-later               |
 \*---------------------------------------------------------*/
 

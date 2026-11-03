@@ -14,7 +14,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/rjmolina13/openrgb-audio-plugin">
+  <a href="https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin">
     <img src="images/logo.png" alt="Logo" width="96" height="96">
   </a>
 
@@ -25,14 +25,14 @@
     <br />
     <strong>Platform Support: Built and confirmed working on Windows (64-bit) for now.</strong>
     <br />
-    <a href="https://github.com/rjmolina13/openrgb-audio-plugin"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/rjmolina13/openrgb-audio-plugin#usage">View Screenshots</a>
+    <a href="https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin#usage">View Screenshots</a>
     &middot;
-    <a href="https://github.com/rjmolina13/openrgb-audio-plugin/issues/new?labels=bug">Report Bug</a>
+    <a href="https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/issues/new?labels=bug">Report Bug</a>
     &middot;
-    <a href="https://github.com/rjmolina13/openrgb-audio-plugin/issues/new?labels=enhancement">Request Feature</a>
+    <a href="https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/issues/new?labels=enhancement">Request Feature</a>
   </p>
 </div>
 
@@ -72,7 +72,7 @@
 > [!IMPORTANT]
 > **Platform Compatibility:** This plugin was built and confirmed to work on **Windows (64-bit)** for now. It relies on Windows CoreAudio / WASAPI (`IMMDeviceEnumerator` and `IMMNotificationClient`) and `OpenRGBEffectsPlugin.dll` (`Qt 5.15.0` MSVC x64, OpenRGB Plugin API Version `4`). Linux and macOS backends are not yet supported.
 
-[![OpenRGB Audio Refresh & Priority Plugin Screen Shot][product-screenshot]](https://github.com/rjmolina13/openrgb-audio-plugin)
+[![OpenRGB Audio Refresh & Priority Plugin Screen Shot][product-screenshot]](https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin)
 
 `OpenRGBEffectsPlugin` enumerates Windows WASAPI audio devices only once inside `AudioManager::AudioManager()` when OpenRGB starts. If you connect Bluetooth headphones, unplug a USB DAC, or switch monitors while OpenRGB is running, the `AudioDevice` dropdown inside effect `Audio settings` dialogs stays frozen until you restart OpenRGB.
 
@@ -115,19 +115,19 @@ You can install the prebuilt `OpenRGBAudioRefreshPlugin.dll` directly into your 
 ### Installation
 
 #### Option A: One-Click Windows Installer (`Setup.exe`)
-1. Download `OpenRGBAudioRefreshPlugin-v*-Windows-x64-Setup.exe` from the [Latest GitHub Release](https://github.com/rjmolina13/openrgb-audio-plugin/releases/latest).
+1. Download `OpenRGBAudioRefreshPlugin-v*-Windows-x64-Setup.exe` from the [Latest GitHub Release](https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/releases/latest).
 2. Run the installer. It installs `OpenRGBAudioRefreshPlugin.dll` directly into `%APPDATA%\OpenRGB\plugins` without requiring Administrator elevation (and isolates its uninstaller inside `%LOCALAPPDATA%\OpenRGBAudioRefreshPlugin` so OpenRGB never scans non-plugin files).
 3. Launch or restart `OpenRGB.exe`.
 
 #### Option B: OpenRGB Built-In Plugin Installer (`OpenRGBAudioRefreshPlugin.dll`)
-1. Download the raw `OpenRGBAudioRefreshPlugin.dll` from the [Latest GitHub Release](https://github.com/rjmolina13/openrgb-audio-plugin/releases/latest).
+1. Download the raw `OpenRGBAudioRefreshPlugin.dll` from the [Latest GitHub Release](https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/releases/latest).
 2. Open **OpenRGB -> Settings -> Plugins** and click **Install Plugin** (or drag and drop `OpenRGBAudioRefreshPlugin.dll` directly onto the Plugins list).
 
 #### Option C: Build From Source
 1. Clone the repository with its submodules (`ref/OpenRGBEffectsPlugin`):
    ```sh
-   git clone --recurse-submodules https://github.com/rjmolina13/openrgb-audio-plugin.git
-   cd openrgb-audio-plugin
+   git clone --recurse-submodules https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin.git
+   cd OpenRGBAudioRefreshPlugin
    ```
    If you already cloned the repository without `--recurse-submodules`, initialize and fetch the linked submodules:
    ```sh
@@ -178,7 +178,7 @@ Navigate to **Settings -> Audio Refresh & Priority** in OpenRGB to manage active
 - [x] Toggleable ordered priority audio devices list with persistent JSON settings
 - [ ] Linux PulseAudio / PipeWire hot-refresh backend support
 
-See the [open issues](https://github.com/rjmolina13/openrgb-audio-plugin/issues) for a full list of proposed features and known issues.
+See the [open issues](https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/issues) for a full list of proposed features and known issues.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -199,8 +199,8 @@ Contributions are welcome. If you have a bug fix or improvement, fork the reposi
 
 ### Top contributors:
 
-<a href="https://github.com/rjmolina13/openrgb-audio-plugin/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=rjmolina13/openrgb-audio-plugin" alt="contrib.rocks image" />
+<a href="https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=rjmolina13/OpenRGBAudioRefreshPlugin" alt="contrib.rocks image" />
 </a>
 
 
@@ -221,7 +221,7 @@ Ronanj Molina (RubyJ) - [@rjmolina13](https://github.com/rjmolina13) - rj.molina
 
 Website: [https://ronanj.site](https://ronanj.site)
 
-Project Link: [https://github.com/rjmolina13/openrgb-audio-plugin](https://github.com/rjmolina13/openrgb-audio-plugin)
+Project Link: [https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin](https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -239,20 +239,20 @@ Project Link: [https://github.com/rjmolina13/openrgb-audio-plugin](https://githu
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[build-shield]: https://img.shields.io/github/actions/workflow/status/rjmolina13/openrgb-audio-plugin/build-and-release.yml?branch=main&style=for-the-badge&label=Build%20%26%20Release
-[build-url]: https://github.com/rjmolina13/openrgb-audio-plugin/actions/workflows/build-and-release.yml
-[release-shield]: https://img.shields.io/github/v/release/rjmolina13/openrgb-audio-plugin?style=for-the-badge
-[release-url]: https://github.com/rjmolina13/openrgb-audio-plugin/releases/latest
-[contributors-shield]: https://img.shields.io/github/contributors/rjmolina13/openrgb-audio-plugin.svg?style=for-the-badge
-[contributors-url]: https://github.com/rjmolina13/openrgb-audio-plugin/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/rjmolina13/openrgb-audio-plugin.svg?style=for-the-badge
-[forks-url]: https://github.com/rjmolina13/openrgb-audio-plugin/network/members
-[stars-shield]: https://img.shields.io/github/stars/rjmolina13/openrgb-audio-plugin.svg?style=for-the-badge
-[stars-url]: https://github.com/rjmolina13/openrgb-audio-plugin/stargazers
-[issues-shield]: https://img.shields.io/github/issues/rjmolina13/openrgb-audio-plugin.svg?style=for-the-badge
-[issues-url]: https://github.com/rjmolina13/openrgb-audio-plugin/issues
-[license-shield]: https://img.shields.io/github/license/rjmolina13/openrgb-audio-plugin.svg?style=for-the-badge
-[license-url]: https://github.com/rjmolina13/openrgb-audio-plugin/blob/main/LICENSE.txt
+[build-shield]: https://img.shields.io/github/actions/workflow/status/rjmolina13/OpenRGBAudioRefreshPlugin/build-and-release.yml?branch=main&style=for-the-badge&label=Build%20%26%20Release
+[build-url]: https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/actions/workflows/build-and-release.yml
+[release-shield]: https://img.shields.io/github/v/release/rjmolina13/OpenRGBAudioRefreshPlugin?style=for-the-badge
+[release-url]: https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/releases/latest
+[contributors-shield]: https://img.shields.io/github/contributors/rjmolina13/OpenRGBAudioRefreshPlugin.svg?style=for-the-badge
+[contributors-url]: https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/rjmolina13/OpenRGBAudioRefreshPlugin.svg?style=for-the-badge
+[forks-url]: https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/network/members
+[stars-shield]: https://img.shields.io/github/stars/rjmolina13/OpenRGBAudioRefreshPlugin.svg?style=for-the-badge
+[stars-url]: https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/stargazers
+[issues-shield]: https://img.shields.io/github/issues/rjmolina13/OpenRGBAudioRefreshPlugin.svg?style=for-the-badge
+[issues-url]: https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/issues
+[license-shield]: https://img.shields.io/github/license/rjmolina13/OpenRGBAudioRefreshPlugin.svg?style=for-the-badge
+[license-url]: https://github.com/rjmolina13/OpenRGBAudioRefreshPlugin/blob/main/LICENSE.txt
 [product-screenshot]: images/openrgb_plugins_view.png
 [Cpp-badge]: https://img.shields.io/badge/C%2B%2B-17-00599C?style=for-the-badge&logo=cplusplus&logoColor=white
 [Cpp-url]: https://isocpp.org/
